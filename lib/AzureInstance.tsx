@@ -1,4 +1,16 @@
+interface IToken {
+    token: any
+}
+
 export default class AzureInstance {
+    authority: string;
+    authorize_endpoint: string;
+    redirect_uri: any;
+    token_endpoint: string;
+    client_id: any;
+    client_secret: any;
+    scope: any;
+    token: any;
     constructor(credentials) {
         this.authority = 'https://login.microsoftonline.com/common';
         this.authorize_endpoint = '/oauth2/v2.0/authorize';
@@ -36,7 +48,7 @@ export default class AzureInstance {
         return this.token;
     }
 
-    getUserInfo(): Promise {
+    getUserInfo(): Promise<IToken> {
         if (this.token === undefined){
             throw new Error("Access token is undefined, please authenticate using Auth first");
         }

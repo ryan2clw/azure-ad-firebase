@@ -1,29 +1,30 @@
-import React, {
-	Component
-} from 'react'
+import React from 'react'
 import {
-	WebView,
 	Dimensions,
-	AsyncStorage,
-	Platform,
 	StyleSheet,
 	View,
 	Text
-} from 'react-native'
-
-import AzureInstance from './AzureInstance'
+} from 'react-native';
+import WebView from 'react-native-webview';
+import AzureInstance from './AzureInstance';
 import Auth from './Auth';
+
 
 export default class AzureLoginView extends React.Component {
 	props : {
 		azureInstance: AzureInstance,
-		onSuccess? : ?Function,
-		onCancel? : ?Function,
+		onSuccess? : Function,
+		onCancel? : Function,
+		loadingView: any,
+		style: any,
+		loadingMessage: any
 	};
 
 	state : {
-		visible: bool,
+		visible: boolean,
+		cancelled: boolean
 	};
+	auth: Auth;
 
 	constructor(props:any){
 		super(props);
@@ -40,11 +41,10 @@ export default class AzureLoginView extends React.Component {
 
 	_handleTokenRequest(e:{ url:string }):any{
 		// get code when url chage
-		let code = /((\?|\&)code\=)[^\&]+/.exec(e.url);
-
-		if( code !== null ){
-			code = String(code[0]).replace(/(\?|\&)?code\=/,'');
-			this.setState({visible : false})
+		let codeArray = /((\?|\&)code\=)[^\&]+/.exec(e.url);
+		if( codeArray !== null ){
+			let code = String(codeArray[0]).replace(/(\?|\&)?code\=/,'');
+			this.setState({...this.state, visible : false})
 
 			// request for a token
 			this.auth.getTokenFromCode(code).then(token => {
@@ -102,7 +102,7 @@ export default class AzureLoginView extends React.Component {
 					javaScriptEnabled={true}
 					domStorageEnabled={true}
 					decelerationRate="normal"
-					javaScriptEnabledAndroid={true}
+					// javaScriptEnabledAndroid={true}
 					onNavigationStateChange={this._handleTokenRequest}
 					onShouldStartLoadWithRequest={(e) => {return true}}
 					startInLoadingState={true}

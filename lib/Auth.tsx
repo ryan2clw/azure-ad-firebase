@@ -6,6 +6,13 @@ import {
 } from 'buffer';
 
 export default class Auth {
+    authority: any;
+    authorize_endpoint: any;
+    token_endpoint: any;
+    client_id: any;
+    client_secret: any;
+    redirect_uri: any;
+    scope: any;
 
     constructor(instance) {
         const config = instance.getConfig();
@@ -34,7 +41,7 @@ export default class Auth {
             '&state=abcd';
     }
 
-    _request(params: any): Promise {
+    _request(params: any): Promise<any> {
         const post_data = querystring.stringify(params);
 
         // create request endpoint
@@ -97,7 +104,7 @@ export default class Auth {
             });
     }
 
-    getTokenFromCode(code: string): Promise {
+    getTokenFromCode(code: string): Promise<any> {
         var params = {
             client_id: this.client_id,
             client_secret: this.client_secret,
@@ -112,11 +119,11 @@ export default class Auth {
         return this._request(params);
     }
 
-    getTokenFromRefreshToken(refreshToken: string): Promise {
+    getTokenFromRefreshToken(refreshToken: string): Promise<any> {
         var params = {
             client_id: this.client_id,
             client_secret: this.client_secret,
-            refresh_token: code,
+            refresh_token: refreshToken,
             grant_type: 'refresh_token',
             redirect_uri: this.redirect_uri,
             response_mode: 'form_post',
